@@ -1,0 +1,36 @@
+name: Distribute NPM Package
+
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+    - 'package.json'
+    
+jobs:
+  generateNpmPackage:
+    runs-on: ubuntu-latest
+    name: Generate NPM Package
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://npm.pkg.github.com/
+          scope: '@gamescrown'
+      - run: npm install
+      - run: echo "FOO=$(npm version --no-git-tag-version patch)" >> $GITHUB_ENV
+      - run: |
+         git config --global user.name "onurclb"
+         git config --global user.email "onur@pow.games"
+         git add .
+         git commit -m "${{ env.FOO }}"
+         git tag "${{ env.FOO }}"
+         git push -u origin main
+         git push --tags
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          
+          

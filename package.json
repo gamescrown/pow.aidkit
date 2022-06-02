@@ -1,0 +1,28 @@
+{
+  "name": "pow.aidkit",
+  "version": "0.0.6",
+  "description": "",
+  "main": "",
+  "displayName": "POW Aid Kit",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@gamescrown"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Pow",
+    "Addy",
+    "SDK"
+  ],
+  "author": {
+    "name": "POW Games",
+    "url": "https://pow.games/"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:gamescrown/pow.aidkit.git",
+    "directory": "POW SDK"
+  }
+}

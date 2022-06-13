@@ -1,0 +1,16 @@
+{
+    "name": "POW.Aidkit.Editor",
+    "rootNamespace": "",
+    "references": [
+        "Pow.AidKit"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

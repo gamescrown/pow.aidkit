@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 
 namespace pow.aidkit
 {
+#if UNITY_EDITOR
     public class GameEventReferenceFinder : EditorWindow
     {
         private static Dictionary<GameEvent, List<EventNode>> _gameEventsDict =
@@ -206,4 +207,5 @@ namespace pow.aidkit
             return parentsString;
         }
     }
+#endif
 }

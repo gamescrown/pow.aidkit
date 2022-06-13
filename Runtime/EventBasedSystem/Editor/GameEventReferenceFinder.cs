@@ -4,10 +4,9 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
-using UnityEditor;
 #endif
-
+using UnityEditor;
+using UnityEngine.SceneManagement;
 
 namespace pow.aidkit
 {

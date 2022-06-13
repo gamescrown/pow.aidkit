@@ -1,9 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
+using UnityEditor;
+#endif
+
 
 namespace pow.aidkit
 {

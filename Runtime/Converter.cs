@@ -12,7 +12,7 @@ namespace pow.aidkit
         {
             if (number < 1000) return number.ToString(format, CultureInfo.CreateSpecificCulture("en-US"));
 
-            string[] simpleText = { "", "K", "M", "B", "T" };
+            string[] simpleText = {"", "K", "M", "B", "T"};
             string[] complexText =
             {
                 "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
@@ -122,7 +122,7 @@ namespace pow.aidkit
 
         public static int GetTotalHour(int time)
         {
-            return (int)TimeSpan.FromSeconds(time).TotalHours;
+            return (int) TimeSpan.FromSeconds(time).TotalHours;
         }
 
         /// <summary>
@@ -156,15 +156,85 @@ namespace pow.aidkit
             number = isFloor ? Mathf.Floor(number) : Mathf.Ceil(number);
             return number / m;
         }
-        
+
         public static IEnumerable<int> GetStringAsIEnumerable(string value, char separator)
         {
             return value.Split(separator).Select(int.Parse);
         }
-        
+
         public static string GetIEnumerableAsString(IEnumerable<int> values, string separator)
         {
             return string.Join(separator, values);
+        }
+
+        /// <summary>
+        /// This function will be used if needed hour minutes or seconds info
+        /// </summary>
+        /// <param name="timeSeconds"></param>
+        /// <returns>
+        /// Return 12h 30m 22s format
+        /// </returns>
+        public static string ConvertSecondsToFormattedTime(double timeSeconds)
+        {
+            int mySeconds = Convert.ToInt32(timeSeconds);
+            int myHours = mySeconds / 3600; //3600 Seconds in 1 hour
+            mySeconds %= 3600;
+            int myMinutes = mySeconds / 60; //60 Seconds in a minute
+            mySeconds %= 60;
+            string mySec = mySeconds.ToString(),
+                myMin = myMinutes.ToString(),
+                myHou = myHours.ToString();
+            var text = "";
+            if (myHours > 0)
+            {
+                text += myHou + "h ";
+            }
+
+            if (myMinutes > 0)
+            {
+                text += myMin + "m ";
+            }
+
+            if (mySeconds > 0)
+            {
+                text += mySec + "s";
+            }
+
+            return text;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="timeSeconds"></param>
+        /// <returns>
+        /// Return 12:30:00 format
+        /// </returns>
+        public static string ConvertToFormattedTime(double timeSeconds)
+        {
+            int mySeconds = Convert.ToInt32(timeSeconds);
+            int myHours = mySeconds / 3600; //3600 Seconds in 1 hour
+            mySeconds %= 3600;
+            int myMinutes = mySeconds / 60; //60 Seconds in a minute
+            mySeconds %= 60;
+            string mySec = mySeconds.ToString(),
+                myMin = myMinutes.ToString(),
+                myHou = myHours.ToString();
+            if (myHours < 10)
+            {
+                myHou = myHou.Insert(0, "0");
+            }
+
+            if (myMinutes < 10)
+            {
+                myMin = myMin.Insert(0, "0");
+            }
+
+            if (mySeconds < 10)
+            {
+                mySec = mySec.Insert(0, "0");
+            }
+
+            return myHou + ":" + myMin + ":" + mySec;
         }
     }
 }

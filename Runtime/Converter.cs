@@ -236,5 +236,10 @@ namespace pow.aidkit
 
             return myHou + ":" + myMin + ":" + mySec;
         }
+
+        public static string ToUpperUsCulture(string input)
+        {
+            return input.ToUpper(CultureInfo.CreateSpecificCulture("en-US"));
+        }
     }
 }

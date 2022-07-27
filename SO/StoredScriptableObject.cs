@@ -4,62 +4,81 @@ using UnityEngine;
 
 namespace pow.aidkit
 {
-    public class StoredScriptableObject : ScriptableObject
+    public abstract class StoredScriptableObject : ScriptableObject
     {
-        protected const string Password = "^*!1BYe8%ThKk@~sE2DP5tzNq/GF?g#nrdCv$wyAXjfVp3=c&u";
-        protected string FilePath;
-        protected string TempFilePath;
+        private string _filePath;
+        private string _tempFilePath;
 
-        protected void Load(Action<BinaryReader> readAction)
+        private const string Password = "^*!1BYe8%ThKk@~sE2DP5tzNq/GF?g#nrdCv$wyAXjfVp3=c&u";
+
+        private void Init(string s)
         {
-            if (string.IsNullOrEmpty(FilePath)) return;
-            if (string.IsNullOrEmpty(TempFilePath)) return;
-            if (!File.Exists(FilePath)) return;
+            string encryptedName = TextEncryption.Encrypt(s, Password);
+            _filePath = Path.Combine(Application.persistentDataPath, encryptedName);
+            _tempFilePath = Path.Combine(Application.persistentDataPath, $"temp{encryptedName}");
+        }
+
+        private void Load()
+        {
+            if (string.IsNullOrEmpty(_filePath) || string.IsNullOrEmpty(_tempFilePath)) return;
+
+            if (!File.Exists(_filePath)) return;
 
             try
             {
-                Encryption.DecryptFile(FilePath, TempFilePath, Password);
+                Encryption.DecryptFile(_filePath, _tempFilePath, Password);
             }
             catch (Exception e)
             {
-                File.Delete(FilePath);
+                File.Delete(_filePath);
                 Debug.LogWarning($"An error occured while decrypting the saved file for: {name}. File is deleted." +
                                  $"\nError: {e}");
             }
 
-            using (var reader = new BinaryReader(File.Open(TempFilePath, FileMode.Open)))
+            using (var reader = new BinaryReader(File.Open(_tempFilePath, FileMode.Open)))
             {
-                readAction?.Invoke(reader);
+                Read(reader);
             }
 
-            File.Delete(TempFilePath);
+            File.Delete(_tempFilePath);
         }
 
-        protected void Save(Action<BinaryWriter> writeAction)
+        protected void Save()
         {
-            if (string.IsNullOrEmpty(FilePath)) return;
-            if (string.IsNullOrEmpty(TempFilePath)) return;
+            if (string.IsNullOrEmpty(_filePath) || string.IsNullOrEmpty(_tempFilePath)) return;
 
-            if (File.Exists(Path.Combine(Application.persistentDataPath, Application.productName)))
+            using (var writer = new BinaryWriter(File.Open(_tempFilePath, FileMode.Create)))
             {
-                File.Create(Path.Combine(Application.persistentDataPath, Application.productName));
+                Write(writer);
             }
 
-            using (var writer = new BinaryWriter(File.Open(TempFilePath, FileMode.Create)))
-            {
-                writeAction?.Invoke(writer);
-            }
+            Encryption.EncryptFile(_tempFilePath, _filePath, Password);
 
-            Encryption.EncryptFile(TempFilePath, FilePath, Password);
+            File.Delete(_tempFilePath);
+        }
 
-            File.Delete(TempFilePath);
+        public virtual void OnEnable()
+        {
+            Init(name);
+            Load();
+        }
+
+        protected abstract void Write(BinaryWriter writer);
+        protected abstract void Read(BinaryReader reader);
+
+        /// <summary>
+        /// If you want to reset the data from ResetGameProgress, override this method and call base.Reset()
+        /// </summary>
+        public virtual void Reset()
+        {
+            Debug.Log($"Resetting stored file values: {name}");
         }
 
         public void RemoveStoredFile()
         {
-            if (string.IsNullOrEmpty(FilePath)) return;
-            if (!File.Exists(FilePath)) return;
-            File.Delete(FilePath);
+            if (string.IsNullOrEmpty(_filePath)) return;
+            if (!File.Exists(_filePath)) return;
+            File.Delete(_filePath);
         }
     }
 }
